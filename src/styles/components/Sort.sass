@@ -1,0 +1,36 @@
+@import '../resources/_data'
+
+.Sort
+  color: $lightblue
+  font: $font-medium
+  font-size: 20px
+  position: relative
+  &__Button
+    width: max-content
+    display: flex
+    align-items: center
+    color: $lightblue
+    font: $font-medium
+    font-size: 24px
+  &__Button-Icon
+    height: 12px
+    margin-left: 14px
+  &__Items-Container
+    width: max-content
+    border: 1px solid $lightblue
+    padding: 10px 0
+    background: $black-2
+    display: flex
+    flex-direction: column
+    position: absolute
+    top: 100%
+    right: 0
+  &__Item
+    width: 100%
+    padding: 5px 20px
+    text-align: left
+    color: $white
+    font: $font-medium
+    font-size: 24px
+    &:hover
+      background: $blue-light

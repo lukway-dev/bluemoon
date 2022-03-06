@@ -1,0 +1,49 @@
+@import "../resources/_data"
+
+.PlanetItem
+  width: 250px
+  height: 80px
+  outline: 1px solid $lightblue
+  border-radius: 40px
+  background-image: url("../assets/rectangulo-2.png")
+  background-size: 210px 80px
+  background-position: 50px 0px
+  display: grid
+  grid-template-columns: 80px 1fr
+  justify-content: space-between
+  position: absolute
+  &:after
+    content: ""
+    width: 9px
+    height: 9px
+    border-radius: 5px
+    background-color: $lightblue
+    position: absolute
+    bottom: 6px
+    right: 6px
+    z-index: -1
+  &:before
+    content: ""
+    width: 4px
+    height: 4px
+    border-radius: 2px
+    background-color: $lightblue
+    position: absolute
+    bottom: 0px
+    right: 0px
+    z-index: -1
+  &__Image
+    width: 80px
+    height: 80px
+    border-top: 1px solid $lightblue
+    border-bottom: 1px solid $lightblue
+    border-right: 1px solid $lightblue
+    border-radius: 40px
+  &__Text-Container
+    padding: 10px 15px
+    display: flex
+    justify-content: flex-start
+    align-items: center
+  &__Text
+    color: $lightblue
+    font: $font-semibold

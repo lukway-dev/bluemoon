@@ -1,0 +1,79 @@
+@import "../resources/_data"
+
+.TopCraters
+  width: 550px
+  height: 825px
+  border: 1px solid $lightblue
+  border-radius: 22px
+  padding: 20px
+  box-shadow: 0 0 10px $lightblue-shadow
+  background-image: url("../assets/rectangulo-1.png")
+  background-size: cover
+  display: flex
+  flex-direction: column
+  position: absolute
+  right: 56px
+  bottom: 56px
+  &__Header
+    width: 100%
+    margin-bottom: 20px
+    display: flex
+    justify-content: space-between
+    align-items: center
+  &__Title-Container
+    width: 100%
+    height: 30px
+    display: flex
+    justify-content: flex-start
+    align-items: center
+  &__Icon
+    height: 100%
+  &__Title
+    margin-left: 10px
+    display: inline-block
+    color: $white
+    font: $font-medium
+    font-size: 24px
+    &--Highlight
+      color: $lightblue
+      font: $font-bold
+      font-size: 24px
+  &__Sort-Container
+    width: fit-content
+    display: flex
+    align-items: center
+    color: $lightblue
+    font: $font-medium
+    font-size: 20px
+    span
+      margin: 3px 5px 0 0
+  &__Sort
+    width: 180px
+    height: 100%
+    border: unset
+    background: unset
+    color: $lightblue
+    font: $font-medium
+    font-size: 20px
+    &:focus
+      outline: unset
+    option
+      color: $white
+      background: $black-2
+  &__Items-Container
+    width: 100%
+    height: 100%
+    padding: 4px
+    display: grid
+    grid-template-columns: 1fr
+    grid-auto-rows: 90px
+    row-gap: 15px
+    overflow-y: scroll
+    &::-webkit-scrollbar
+      width: 5px
+      &-track
+        border-radius: 5px
+        background: $blue-dark
+      &-thumb
+        border-radius: 5px
+        background: $lightblue

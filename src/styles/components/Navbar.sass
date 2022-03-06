@@ -1,0 +1,31 @@
+@import "../resources/_data"
+
+.Navbar
+  height: 45px
+  display: grid
+  grid-template-columns: repeat(5, auto)
+  column-gap: 30px
+  align-items: center
+  &__Button
+    height: 100%
+    padding: 0 10px
+    display: flex
+    justify-content: center
+    align-items: center
+    color: $white
+    font: $font-bold
+    font-size: 20px
+    &:hover
+      color: $gray-light
+    &--Special
+      @extend .Navbar__Button
+      border-radius: 40px
+      padding: 0 30px
+      background-color: $lightblue
+      color: $black
+      &:hover
+        color: $black
+        box-shadow: 0 0 20px $lightblue-shadow
+  &__SearchIcon
+    width: 20px
+    height: 20px

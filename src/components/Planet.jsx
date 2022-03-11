@@ -23,7 +23,6 @@ const Planet = () => {
   const canvasRef = useRef(null)
   const { modal, setModal } = useContext(AppContext)
 
-
   if(canvasRef.current) {
     let camera, stats;
     let composer, renderer, mixer, clock, labelRenderer, moonLabel, scene, moonLabel_2, moonLabel_3, moonLabel_4, moonLabel_5;
@@ -32,6 +31,7 @@ const Planet = () => {
     let moonDiv_2, textContainer_2, imgNft_2, text_2;
     let poin, poin_1, poin_2, poin_3, poin_4;
     const labels = [];
+    let labelsContainer
     const elapsedtime = 0.05;
     let group = new THREE.Group();
     let groupHalos = new THREE.Group();
@@ -86,6 +86,15 @@ const Planet = () => {
       controls.maxPolarAngle = Math.PI * 0.5;
       controls.minDistance = 1;
       controls.maxDistance = 10;
+      controls.enableZoom=false;
+      controls.maxPolarAngle =2;
+      controls.minPolarAngle = 0;
+      controls.minAzimuthAngle = -Math.PI+0.3;
+      controls.maxAzimuthAngle = Math.PI;
+      camera.position.set( - 5, 2.5, - 2.5 );
+      let vs = new THREE.Vector3(0,0,0);
+      controls.target= vs;
+      controls.update();
 
       //directional light
       // var light = new THREE.DirectionalLight(0xffffff, 0.75);
@@ -126,38 +135,38 @@ const Planet = () => {
       //textura
       const textura = new THREE.TextureLoader().load('/examples/textures/planets/moon_1024.jpg');
       //asteroides
-      /*geom_asteroide_1 = new THREE.SphereGeometry( 0.10, 12, 6 ); 
-      mat_asteroide_1 = new THREE.MeshPhongMaterial( {map: textura, shininess:40, reflectivity:1, emissive:0x001219  } ); 
-      asteroide_1 = new THREE.Mesh(geom_asteroide_1, mat_asteroide_1); 
-      geom_asteroide_2 = new THREE.SphereGeometry( 0.10, 12, 6 ); 
-      mat_asteroide_2 = new THREE.MeshPhongMaterial( {map: textura, shininess:40, reflectivity:1, emissive:0x001219  } ); 
-      asteroide_2 = new THREE.Mesh(geom_asteroide_2, mat_asteroide_2);  
-      geom_asteroide_3 = new THREE.SphereGeometry( 0.10, 12, 6 ); 
-      mat_asteroide_3 = new THREE.MeshPhongMaterial( {map: textura, shininess:40, reflectivity:1, emissive:0x001219  } ); 
-      asteroide_3 = new THREE.Mesh(geom_asteroide_3, mat_asteroide_3); 
-      geom_asteroide_4 = new THREE.SphereGeometry( 0.10, 12, 6 ); 
-      mat_asteroide_4 = new THREE.MeshPhongMaterial( {map: textura, shininess:40, reflectivity:1, emissive:0x001219  } ); 
-      asteroide_4 = new THREE.Mesh(geom_asteroide_4, mat_asteroide_4); 
-      geom_asteroide_5 = new THREE.SphereGeometry( 0.10, 12, 6 ); 
-      mat_asteroide_5 = new THREE.MeshPhongMaterial( {map: textura, shininess:40, reflectivity:1, emissive:0x001219  } ); 
-      asteroide_5 = new THREE.Mesh(geom_asteroide_5, mat_asteroide_5); 
-      geom_asteroide_6 = new THREE.SphereGeometry( 0.10, 12, 6 ); 
-      mat_asteroide_6 = new THREE.MeshPhongMaterial( {map: textura, shininess:40, reflectivity:1, emissive:0x001219  } ); 
-      asteroide_6 = new THREE.Mesh(geom_asteroide_6, mat_asteroide_6);  
+      /*geom_asteroide_1 = new THREE.SphereGeometry( 0.10, 12, 6 );
+      mat_asteroide_1 = new THREE.MeshPhongMaterial( {map: textura, shininess:40, reflectivity:1, emissive:0x001219  } );
+      asteroide_1 = new THREE.Mesh(geom_asteroide_1, mat_asteroide_1);
+      geom_asteroide_2 = new THREE.SphereGeometry( 0.10, 12, 6 );
+      mat_asteroide_2 = new THREE.MeshPhongMaterial( {map: textura, shininess:40, reflectivity:1, emissive:0x001219  } );
+      asteroide_2 = new THREE.Mesh(geom_asteroide_2, mat_asteroide_2);
+      geom_asteroide_3 = new THREE.SphereGeometry( 0.10, 12, 6 );
+      mat_asteroide_3 = new THREE.MeshPhongMaterial( {map: textura, shininess:40, reflectivity:1, emissive:0x001219  } );
+      asteroide_3 = new THREE.Mesh(geom_asteroide_3, mat_asteroide_3);
+      geom_asteroide_4 = new THREE.SphereGeometry( 0.10, 12, 6 );
+      mat_asteroide_4 = new THREE.MeshPhongMaterial( {map: textura, shininess:40, reflectivity:1, emissive:0x001219  } );
+      asteroide_4 = new THREE.Mesh(geom_asteroide_4, mat_asteroide_4);
+      geom_asteroide_5 = new THREE.SphereGeometry( 0.10, 12, 6 );
+      mat_asteroide_5 = new THREE.MeshPhongMaterial( {map: textura, shininess:40, reflectivity:1, emissive:0x001219  } );
+      asteroide_5 = new THREE.Mesh(geom_asteroide_5, mat_asteroide_5);
+      geom_asteroide_6 = new THREE.SphereGeometry( 0.10, 12, 6 );
+      mat_asteroide_6 = new THREE.MeshPhongMaterial( {map: textura, shininess:40, reflectivity:1, emissive:0x001219  } );
+      asteroide_6 = new THREE.Mesh(geom_asteroide_6, mat_asteroide_6);
       //posiciones de asteroides
-      asteroide_1.position.set(-4,1.8,0); 
-      asteroide_2.position.set(-3.1,1.2,0); 
-      asteroide_3.position.set(-3,-1.8,-2); 
-      asteroide_4.position.set(3.6,1.4,0); 
-      asteroide_5.position.set(2,-1,0); 
-      asteroide_6.position.set(3,-1.4,0);   
-      //escala  
-      asteroide_1.scale.set(3,3,3); 
+      asteroide_1.position.set(-4,1.8,0);
+      asteroide_2.position.set(-3.1,1.2,0);
+      asteroide_3.position.set(-3,-1.8,-2);
+      asteroide_4.position.set(3.6,1.4,0);
+      asteroide_5.position.set(2,-1,0);
+      asteroide_6.position.set(3,-1.4,0);
+      //escala
+      asteroide_1.scale.set(3,3,3);
       asteroide_3.scale.set(2,2,2);
-      asteroide_4.scale.set(3,3,3); 
+      asteroide_4.scale.set(3,3,3);
       scene.add(asteroide_1,asteroide_2,asteroide_3,asteroide_4,asteroide_5,asteroide_6);*/
 
-      //labels html 2D  
+      //labels html 2D
       //primer elemento nft
       // let referencias = [ itemRef_1, itemRef_2, itemRef_3 ]
       // let label = []
@@ -225,6 +234,8 @@ const Planet = () => {
             labels.forEach(element => {
               model.remove(element)
             })
+
+            labelsContainer.style.position = "static !important"
           })
 
           moonLabel = new CSS2DObject( moonDiv );
@@ -523,10 +534,6 @@ const Planet = () => {
         var objectId = interse[0].object.id;
         // var objeto = interse[0].object;
 
-        if(!interse[0].object.position.x == 0){
-          console.log("Id: " + interse[0].object.id + " posición: " + interse[0].object.position.x);
-        }
-
         // if(!interse[0].object.position.x == 0){
         //   labels.forEach(element => {
         //     if(element.id === objectId) {
@@ -539,27 +546,22 @@ const Planet = () => {
         switch (objectId){
         case objectId = 60:
           model.add(labels[0])
-          console.log(labels[0])
           break;
 
         case objectId = 61:
           model.add(labels[1])
-          console.log(labels[1])
           break;
 
         case objectId = 62:
           model.add(labels[2])
-          console.log(labels[2])
           break;
 
         case objectId = 63:
           model.add(labels[3])
-          console.log(labels[3])
           break;
 
         case objectId = 64:
           model.add(labels[4])
-          console.log(labels[4])
           break;
 
         default:
@@ -649,7 +651,6 @@ const Planet = () => {
       if(interse.length>0){
         var objectId = interse[0].object.id;
         if(objectId === 59) {
-          console.log(objectId);
           stopMoon();
         }
       }
@@ -691,8 +692,10 @@ asteroide_6.rotation.y = Math.sin(elapsedtime*0.4);  */
       //camera.layers.set(0);
       labelRenderer.render( scene, camera );
 
-      // document.querySelectorAll('body > div')
-      // document.removeChild()
+      if(!labelsContainer) {
+        labelsContainer = document.querySelector('#app ~ div')
+      }
+      // console.log(labelsContainer)
     }
   }
 

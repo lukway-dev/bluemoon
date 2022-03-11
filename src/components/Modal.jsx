@@ -14,6 +14,10 @@ const Modal = () => {
       open: false,
       itemId: ''
     })
+
+    const labelsContainer = document.querySelector('#app ~ div')
+
+    labelsContainer.style.position = 'absolute !important'
   }
 
   if (!modal.open) return null

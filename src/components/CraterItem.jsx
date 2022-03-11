@@ -1,11 +1,15 @@
 import React from 'react'
+import { useContext } from 'react'
+import { AppContext } from '../context/AppContext'
 // import React, { useEffect, useRef, useContext } from 'react'
 // import { AppContext } from '../context/AppContext'
 import '../styles/components/CraterItem.sass'
 
-const CraterItem = ({ id, name, date, price, image, selected }) => {
+const CraterItem = ({ id, name, date, price, image }) => {
+  const { modal } = useContext(AppContext)
+
   return (
-    <div className={selected ? 'CraterItem--Selected' : 'CraterItem'}>
+    <div className={modal.itemId === id ? 'CraterItem--Selected' : 'CraterItem'}>
       <img className='CraterItem__Image' src={image} alt={name} title={name}/>
       <div className="CraterItem__Text-Container">
         <div className="CraterItem__Title-Container">

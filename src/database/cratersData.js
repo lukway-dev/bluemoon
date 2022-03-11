@@ -5,7 +5,6 @@ const cratersData = [
     date: 'Jan 26, 2022',
     price: 2.28,
     image: 'https://lh3.googleusercontent.com/ojzA5XN6UO0qTGyiI6lGTJbbn73SQzu5ABVSV2H0AEgfv4gW7QOihhjNM_Q69P2pppTJpdV272yXLHE4vp22O4gPxcD2n9WVNfEkCA=w600',
-    selected: true
   }, {
     id: 8514,
     name: 'CryptoRayRays',

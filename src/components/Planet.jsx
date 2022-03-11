@@ -1,4 +1,5 @@
 import React, { useRef, useState } from 'react'
+import Modal from './Modal'
 import * as THREE from 'three'
 
 import Stats from 'three/examples/jsm/libs/stats.module.js';
@@ -21,9 +22,10 @@ import cratersData from '../database/cratersData';
 
 const Planet = () => {
   const canvasRef = useRef(null)
+  const [ state, setState ] = useState(true)
   const { modal, setModal } = useContext(AppContext)
 
-  if(canvasRef.current) {
+  if(canvasRef.current && state) {
     let camera, stats;
     let composer, renderer, mixer, clock, labelRenderer, moonLabel, scene, moonLabel_2, moonLabel_3, moonLabel_4, moonLabel_5;
     var model, asteroides, LightBeam, LightBeam_2, LightBeam_3, LightBeam_4, LightBeam_5;
@@ -73,6 +75,7 @@ const Planet = () => {
       labelRenderer.setSize( window.innerWidth, window.innerHeight );
       labelRenderer.domElement.style.position = 'absolute';
       labelRenderer.domElement.style.top = '0px';
+      // labelRenderer.domElement.style.pointerEvents = 'none';
       document.body.appendChild( labelRenderer.domElement );
 
       scene = new THREE.Scene();
@@ -83,14 +86,14 @@ const Planet = () => {
       //camera.layers.enable(1);
 
       const controls = new OrbitControls( camera, labelRenderer.domElement );
-      controls.maxPolarAngle = Math.PI * 0.5;
-      controls.minDistance = 1;
-      controls.maxDistance = 10;
+      // controls.maxPolarAngle = Math.PI * 0.5;
+      // controls.minDistance = 1;
+      // controls.maxDistance = 10;
       controls.enableZoom=false;
-      controls.maxPolarAngle =2;
-      controls.minPolarAngle = 0;
-      controls.minAzimuthAngle = -Math.PI+0.3;
-      controls.maxAzimuthAngle = Math.PI;
+      // controls.maxPolarAngle =2;
+      // controls.minPolarAngle = 0;
+      // controls.minAzimuthAngle = -Math.PI+0.3;
+      // controls.maxAzimuthAngle = Math.PI;
       camera.position.set( - 5, 2.5, - 2.5 );
       let vs = new THREE.Vector3(0,0,0);
       controls.target= vs;
@@ -235,13 +238,14 @@ const Planet = () => {
               model.remove(element)
             })
 
-            labelsContainer.style.position = "static !important"
+            labelRenderer.domElement.style.position = "static"
           })
 
           moonLabel = new CSS2DObject( moonDiv );
 
           moonLabel.position.set(positions[index].x, positions[index].y, positions[index].z);
           moonLabel.lookAt(positions[index]);
+          moonLabel.scale.set(0.003, 0.003, 0.003)
           // scene.add(itemLabel);
           labels.push(moonLabel)
 
@@ -414,7 +418,7 @@ const Planet = () => {
         scene.add(group);
         animate();
       } );
-      const gui = new GUI();
+      // const gui = new GUI();
 
       // gui.add( params, 'exposure', 0.1, 2 ).onChange( function ( value ) {
       //   renderer.toneMappingExposure = Math.pow( value, 4.0 );
@@ -438,16 +442,16 @@ const Planet = () => {
       // gui.add(params, 'rotation', 0.0, 7.0).step(0.01).onChange(function (value){
       //   LightBeam_5.rotation.z = Number(value);
       // });
-      gui.add(params, 'position', 0.0, 7.0).step(0.01).onChange(function (value){
-        model.position.x = Number(value);
-      });
-      gui.add(params, 'position', 0.0, 7.0).step(0.01).onChange(function (value){
-        model.position.y = Number(value);
-      });
-      gui.add(params, 'position', 0.0, 7.0).step(0.01).onChange(function (value){
-        model.position.z = Number(value);
-      });
-          renderer.toneMappingExposure = Math.pow(0.96,4);
+      // gui.add(params, 'position', 0.0, 7.0).step(0.01).onChange(function (value){
+      //   model.position.x = Number(value);
+      // });
+      // gui.add(params, 'position', 0.0, 7.0).step(0.01).onChange(function (value){
+      //   model.position.y = Number(value);
+      // });
+      // gui.add(params, 'position', 0.0, 7.0).step(0.01).onChange(function (value){
+      //   model.position.z = Number(value);
+      // });
+      renderer.toneMappingExposure = Math.pow(0.96,4);
 
       window.addEventListener( 'resize', onWindowResize );
 
@@ -696,6 +700,7 @@ asteroide_6.rotation.y = Math.sin(elapsedtime*0.4);  */
         labelsContainer = document.querySelector('#app ~ div')
       }
       // console.log(labelsContainer)
+      setState(false)
     }
   }
 

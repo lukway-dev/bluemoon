@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import React, { useRef, useState } from 'react'
 import * as THREE from 'three'
 
 import Stats from 'three/examples/jsm/libs/stats.module.js';
@@ -16,11 +16,13 @@ import AsteroidsGLB from '../assets/Asteroids.glb'
 import LightBeamGLB from '../assets/LightBeam_n.glb'
 import { useContext } from 'react';
 import { AppContext } from '../context/AppContext';
+import cratersData from '../database/cratersData';
 // import BlueMoonGLB from '../assets/BlueMoon.glb'
 
 const Planet = () => {
   const canvasRef = useRef(null)
-  const { references } = useContext(AppContext)
+  const { modal, setModal } = useContext(AppContext)
+
 
   if(canvasRef.current) {
     let camera, stats;
@@ -28,6 +30,9 @@ const Planet = () => {
     var model, asteroides, LightBeam, LightBeam_2, LightBeam_3, LightBeam_4, LightBeam_5;
     let moonDiv, textContainer, imgNft, text;
     let moonDiv_2, textContainer_2, imgNft_2, text_2;
+    let poin, poin_1, poin_2, poin_3, poin_4;
+    const labels = [];
+    const elapsedtime = 0.05;
     let group = new THREE.Group();
     let groupHalos = new THREE.Group();
     const params = {
@@ -44,6 +49,8 @@ const Planet = () => {
     var asteroide_1, asteroide_2, asteroide_3, asteroide_4, asteroide_5, asteroide_6;
     var mat_asteroide_1, mat_asteroide_2, mat_asteroide_3, mat_asteroide_4, mat_asteroide_5, mat_asteroide_6;
     var geom_asteroide_1, geom_asteroide_2, geom_asteroide_3, geom_asteroide_4, geom_asteroide_5, geom_asteroide_6;
+
+    var prueba = new THREE.Group();
 
     init();
 
@@ -184,162 +191,85 @@ const Planet = () => {
       var m_3 = new THREE.Vector3(-0.9904384997938112, -0.09754758544036858, -0.0975502265550357 );
       var m_4 = new THREE.Vector3(0.607322417164568, 0.2890037594414522, 0.7400245324569269);
 
-      // const labels = []
-      // const positions = [m, m_1, m_2, m_3, m_4]
+      const positions = [m, m_1, m_2, m_3, m_4]
 
-      // for (const item in references) {
-      //   const itemLabel = new CSS2DObject( references[item] );
-      //   itemLabel.position.set(positions[item]);
-      //   itemLabel.lookAt(positions[item]);
-      //   itemLabel.visible = true;
-      //   // scene.add(itemLabel);
+      cratersData.forEach((element, index) => {
+        if(index < 5) {
+          const moonDiv = document.createElement( 'div' );
 
-      //   labels.push(itemLabel)
-      // }
+          document.body.appendChild(moonDiv);
+          moonDiv.className = 'PlanetItem';
+          moonDiv.id ='myInput';
+
+          imgNft = document.createElement('img');
+          imgNft.className = 'PlanetItem__Image';
+          imgNft.src = element.image;
+
+          textContainer = document.createElement('div');
+          textContainer.className = 'PlanetItem__Text-Container';
+
+          text = document.createElement('span');
+          text.className = 'PlanetItem__Text';
+          text.textContent = element.name;
+
+          moonDiv.appendChild(imgNft);
+          moonDiv.appendChild(textContainer);
+          textContainer.appendChild(text);
+
+          moonDiv.addEventListener('pointerdown', () => {
+            setModal({
+              open: true,
+              itemId: element.id
+            })
+
+            labels.forEach(element => {
+              model.remove(element)
+            })
+          })
+
+          moonLabel = new CSS2DObject( moonDiv );
+
+          moonLabel.position.set(positions[index].x, positions[index].y, positions[index].z);
+          moonLabel.lookAt(positions[index]);
+          // scene.add(itemLabel);
+          labels.push(moonLabel)
+
+          moonDiv.classList.add("hidden")
+        }
+      });
+
+      // //segundo elemento nft
+      // moonDiv = document.createElement( 'div' );
+
+      // document.body.appendChild(moonDiv);
+      // moonDiv.className = 'PlanetItem';
+      // moonDiv.id ='myInput';
+
+      // imgNft = document.createElement('img');
+      // imgNft.className = 'PlanetItem__Image';
+      // imgNft.src = 'https://lh3.googleusercontent.com/ojzA5XN6UO0qTGyiI6lGTJbbn73SQzu5ABVSV2H0AEgfv4gW7QOihhjNM_Q69P2pppTJpdV272yXLHE4vp22O4gPxcD2n9WVNfEkCA=w600';
+
+      // textContainer = document.createElement('div');
+      // textContainer.className = 'PlanetItem__Text-Container';
+
+      // text = document.createElement('span');
+      // text.className = 'PlanetItem__Text';
+      // text.textContent = 'Fishy Fam 1';
+
+      // moonDiv.appendChild(imgNft);
+      // moonDiv.appendChild(textContainer);
+      // textContainer.appendChild(text);
 
       // moonLabel = new CSS2DObject( moonDiv );
-      // moonLabel.position.set( 0.2888997963720485,-0.097548587942181,0.9523765960200176);
+      // moonLabel.position.set(0.2888997963720485,-0.097548587942181,0.9523765960200176);
       // moonLabel.lookAt(0.2888997963720485,-0.097548587942181,0.9523765960200176);
-      // moonLabel.visible = false;
 
-      //segundo elemento nft
-      moonDiv = document.createElement( 'div' );
+      // console.log(moonDiv)
+      // console.log(moonEspecialDiv)
 
-      document.body.appendChild(moonDiv);
-      moonDiv.className = 'PlanetItem';
-      moonDiv.id ='myInput';
-
-      imgNft = document.createElement('img');
-      imgNft.className = 'PlanetItem__Image';
-      imgNft.src = 'https://lh3.googleusercontent.com/ojzA5XN6UO0qTGyiI6lGTJbbn73SQzu5ABVSV2H0AEgfv4gW7QOihhjNM_Q69P2pppTJpdV272yXLHE4vp22O4gPxcD2n9WVNfEkCA=w600';
-
-      textContainer = document.createElement('div');
-      textContainer.className = 'PlanetItem__Text-Container';
-
-      text = document.createElement('span');
-      text.className = 'PlanetItem__Text';
-      text.textContent = 'Fishy Fam 1';
-
-      moonDiv.appendChild(imgNft);
-      moonDiv.appendChild(textContainer);
-      textContainer.appendChild(text);
-
-      moonLabel = new CSS2DObject( moonDiv );
-      moonLabel.position.set(3.2888997963720485,-0.097548587942181,0.9523765960200176);
-      moonLabel.lookAt(0.2888997963720485,-0.097548587942181,0.9523765960200176);
-      // moonLabel.visible = false;
-
-      //
-
-      moonDiv_2 = document.createElement( 'div' );
-
-      document.body.appendChild(moonDiv_2);
-      moonDiv_2.className = 'PlanetItem';
-      moonDiv_2.id ='myInput';
-
-      imgNft_2 = document.createElement('img');
-      imgNft_2.className = 'PlanetItem__Image';
-      imgNft_2.src = 'https://lh3.googleusercontent.com/ojzA5XN6UO0qTGyiI6lGTJbbn73SQzu5ABVSV2H0AEgfv4gW7QOihhjNM_Q69P2pppTJpdV272yXLHE4vp22O4gPxcD2n9WVNfEkCA=w600';
-
-      textContainer_2 = document.createElement('div');
-      textContainer_2.className = 'PlanetItem__Text-Container';
-
-      text_2 = document.createElement('span');
-      text_2.className = 'PlanetItem__Text';
-      text_2.textContent = 'Fishy Fam 2';
-
-      moonDiv_2.appendChild(imgNft_2);
-      moonDiv_2.appendChild(textContainer_2);
-      textContainer_2.appendChild(text_2);
-
-      moonLabel_2 = new CSS2DObject( moonDiv_2 );
-      moonLabel_2.position.set(-0.6073225261727431, 0.2890031902501969, -0.7400246652837772);
-      moonLabel_2.lookAt(-0.6073225261727431, 0.2890031902501969, -0.7400246652837772);
-      // moonLabel_2.visible = false;
-
-      //
-
-      let moonDiv_3 = document.createElement( 'div' );
-
-      document.body.appendChild(moonDiv_3);
-      moonDiv_3.className = 'PlanetItem';
-      moonDiv_3.id ='myInput';
-
-      let imgNft_3 = document.createElement('img');
-      imgNft_3.className = 'PlanetItem__Image';
-      imgNft_3.src = 'https://lh3.googleusercontent.com/ojzA5XN6UO0qTGyiI6lGTJbbn73SQzu5ABVSV2H0AEgfv4gW7QOihhjNM_Q69P2pppTJpdV272yXLHE4vp22O4gPxcD2n9WVNfEkCA=w600';
-
-      let textContainer_3 = document.createElement('div');
-      textContainer_3.className = 'PlanetItem__Text-Container';
-
-      let text_3 = document.createElement('span');
-      text_3.className = 'PlanetItem__Text';
-      text_3.textContent = 'Fishy Fam 3';
-
-      moonDiv_3.appendChild(imgNft_3);
-      moonDiv_3.appendChild(textContainer_3);
-      textContainer_3.appendChild(text_3);
-
-      moonLabel_3 = new CSS2DObject( moonDiv_3 );
-      moonLabel_3.position.set(-0.7707801703924689, 0.6325620751447861, -0.07591541357510112);
-      moonLabel_3.lookAt(-0.7707801703924689, 0.6325620751447861, -0.07591541357510112);
-      // moonLabel_3.visible = false;
-
-      //
-
-      let moonDiv_4 = document.createElement( 'div' );
-
-      document.body.appendChild(moonDiv_4);
-      moonDiv_4.className = 'PlanetItem';
-      moonDiv_4.id ='myInput';
-
-      let imgNft_4 = document.createElement('img');
-      imgNft_4.className = 'PlanetItem__Image';
-      imgNft_4.src = 'https://lh3.googleusercontent.com/ojzA5XN6UO0qTGyiI6lGTJbbn73SQzu5ABVSV2H0AEgfv4gW7QOihhjNM_Q69P2pppTJpdV272yXLHE4vp22O4gPxcD2n9WVNfEkCA=w600';
-
-      let textContainer_4 = document.createElement('div');
-      textContainer_4.className = 'PlanetItem__Text-Container';
-
-      let text_4 = document.createElement('span');
-      text_4.className = 'PlanetItem__Text';
-      text_4.textContent = 'Fishy Fam 4';
-
-      moonDiv_4.appendChild(imgNft_4);
-      moonDiv_4.appendChild(textContainer_4);
-      textContainer_4.appendChild(text_4);
-
-      moonLabel_4 = new CSS2DObject( moonDiv_4 );
-      moonLabel_4.position.set(-0.9904384997938112, -0.09754758544036858, -0.0975502265550357 );
-      moonLabel_4.lookAt(-0.9904384997938112, -0.09754758544036858, -0.0975502265550357 );
-      // moonLabel_4.visible = false;
-
-      //
-
-      let moonDiv_5 = document.createElement( 'div' );
-
-      document.body.appendChild(moonDiv_5);
-      moonDiv_5.className = 'PlanetItem';
-      moonDiv_5.id ='myInput';
-
-      let imgNft_5 = document.createElement('img');
-      imgNft_5.className = 'PlanetItem__Image';
-      imgNft_5.src = 'https://lh3.googleusercontent.com/ojzA5XN6UO0qTGyiI6lGTJbbn73SQzu5ABVSV2H0AEgfv4gW7QOihhjNM_Q69P2pppTJpdV272yXLHE4vp22O4gPxcD2n9WVNfEkCA=w600';
-
-      let textContainer_5 = document.createElement('div');
-      textContainer_5.className = 'PlanetItem__Text-Container';
-
-      let text_5 = document.createElement('span');
-      text_5.className = 'PlanetItem__Text';
-      text_5.textContent = 'Fishy Fam 5';
-
-      moonDiv_5.appendChild(imgNft_5);
-      moonDiv_5.appendChild(textContainer_5);
-      textContainer_5.appendChild(text_5);
-
-      moonLabel_5 = new CSS2DObject( moonDiv_5 );
-      moonLabel_5.position.set(0.607322417164568, 0.2890037594414522, 0.7400245324569269);
-      moonLabel_5.lookAt(0.607322417164568, 0.2890037594414522, 0.7400245324569269);
-      // moonLabel_5.visible = false;
+      // console.log(moonLabel)
+      // console.log(labels[0])
+      // // // moonLabel.visible = false;
 
       //light beam LightBeam 1
       new GLTFLoader().load( LightBeamGLB, function ( gltf ) {
@@ -422,11 +352,11 @@ const Planet = () => {
             // var m_2 = new THREE.Vector3(-0.7707801703924689, 0.6325620751447861, -0.07591541357510112);
             // var m_3 = new THREE.Vector3(-0.9904384997938112, -0.09754758544036858, -0.0975502265550357 );
             // var m_4 = new THREE.Vector3(0.607322417164568, 0.2890037594414522, 0.7400245324569269);
-            var poin = new THREE.Mesh(new THREE.CircleGeometry( 3.1,30 ),  new THREE.MeshStandardMaterial( { side: THREE.DoubleSide, emissive:0xffffff, emissiveIntensity: 2 } ));
-            var poin_1 = new THREE.Mesh(new THREE.CircleGeometry( 3.1,30 ),  new THREE.MeshStandardMaterial( { side: THREE.DoubleSide, emissive:0xffffff, emissiveIntensity: 20 } ));
-            var poin_2 = new THREE.Mesh(new THREE.CircleGeometry( 3.1,30 ),  new THREE.MeshStandardMaterial( { side: THREE.DoubleSide, emissive:0xffffff, emissiveIntensity: 20 } ));
-            var poin_3 = new THREE.Mesh(new THREE.CircleGeometry( 3.1,30 ),  new THREE.MeshStandardMaterial( { side: THREE.DoubleSide, emissive:0xffffff, emissiveIntensity: 20 } ));
-            var poin_4 = new THREE.Mesh(new THREE.CircleGeometry( 3.1,30 ),  new THREE.MeshStandardMaterial( { side: THREE.DoubleSide, emissive:0xffffff, emissiveIntensity: 20 } ));
+            poin = new THREE.Mesh(new THREE.CircleGeometry( 3.1,30 ),  new THREE.MeshStandardMaterial( { side: THREE.DoubleSide, emissive:0xffffff, emissiveIntensity: 2 } ));
+            poin_1 = new THREE.Mesh(new THREE.CircleGeometry( 3.1,30 ),  new THREE.MeshStandardMaterial( { side: THREE.DoubleSide, emissive:0xffffff, emissiveIntensity: 20 } ));
+            poin_2 = new THREE.Mesh(new THREE.CircleGeometry( 3.1,30 ),  new THREE.MeshStandardMaterial( { side: THREE.DoubleSide, emissive:0xffffff, emissiveIntensity: 20 } ));
+            poin_3 = new THREE.Mesh(new THREE.CircleGeometry( 3.1,30 ),  new THREE.MeshStandardMaterial( { side: THREE.DoubleSide, emissive:0xffffff, emissiveIntensity: 20 } ));
+            poin_4 = new THREE.Mesh(new THREE.CircleGeometry( 3.1,30 ),  new THREE.MeshStandardMaterial( { side: THREE.DoubleSide, emissive:0xffffff, emissiveIntensity: 20 } ));
             poin.lookAt(m);
             poin_1.lookAt(m_1);
             poin_2.lookAt(m_2);
@@ -456,14 +386,12 @@ const Planet = () => {
             scene.add( pointLightHelper );*/
            //scene.add(moonLabel_2);
             // model.add(poin, poin_1, poin_2, poin_3, poin_4, moonLabel, moonLabel_2, moonLabel_3, moonLabel_4, moonLabel_5, LightBeam, LightBeam_2, LightBeam_3, LightBeam_4, LightBeam_5);
-            model.add(poin, poin_1, poin_2, poin_3, poin_4, moonLabel, LightBeam, LightBeam_2, LightBeam_3, LightBeam_4, LightBeam_5);
+            model.add(poin, poin_1, poin_2, poin_3, poin_4, LightBeam, LightBeam_2, LightBeam_3, LightBeam_4, LightBeam_5);
 
-            // for (const label in labels) {
-            //   model.add(labels[label])
+            // labels.forEach(element => {
+            //   model.add(element)
+            // })
 
-            //   console.log(labels[label])
-            // }
-            console.log(model.position)
             model.position.set(1.4, 0, -1)
             group.add(model);
             //model.layers.enable(1);
@@ -472,7 +400,7 @@ const Planet = () => {
           }
         });
         //model.layers.enable(2);
-        scene.add( group);
+        scene.add(group);
         animate();
       } );
       const gui = new GUI();
@@ -518,31 +446,32 @@ const Planet = () => {
       mouse.y = -( event.clientY / window.innerHeight ) * 2 + 1;
       showNft();
     }
+
     function pickMoon(event){
       mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
       mouse.y = -( event.clientY / window.innerHeight ) * 2 + 1;
       hideNft();
     }
-    function navigate(){ 
+    function navigate(){
       raycast.setFromCamera( mouse, camera );
       // calculate objects intersecting the picking ray
-      const intersects = raycast.intersectObject( group ); 
-      if(intersects.length > 0){  
-        //alert("luna fue intersectado"); 
-        //window.open('https://www.legionnetwork.io/');  
-        /*const n = new THREE.Vector3();  
+      const intersects = raycast.intersectObject( group );
+      if(intersects.length > 0){
+        //alert("luna fue intersectado");
+        //window.open('https://www.legionnetwork.io/');
+        /*const n = new THREE.Vector3();
         console.log(n);
-        n.copy((intersects[0].face).normal);  
+        n.copy((intersects[0].face).normal);
         console.log((intersects[0].face).normal);
         //console.log(intersects[0].face.normal);
-        n.transformDirection(intersects[0].object.matrixWorld); 
+        n.transformDirection(intersects[0].object.matrixWorld);
         console.log(intersects[0].object.matrixWorld);
         var draw_point = new THREE.Mesh(new THREE.CircleGeometry( 3.1,30 ),  new THREE.MeshBasicMaterial( { color: 0xD2F330, side: THREE.DoubleSide } ));
         draw_point.lookAt(n);
-        draw_point.scale.set(0.02,0.02,0.02); 
-        draw_point.position.set(n.x,n.y,n.z);  
-        draw_point.position.addScaledVector(n, 0.1); 
-        group.add(draw_point); 
+        draw_point.scale.set(0.02,0.02,0.02);
+        draw_point.position.set(n.x,n.y,n.z);
+        draw_point.position.addScaledVector(n, 0.1);
+        group.add(draw_point);
         console.log(n.x, n.y, n.z);*/
         console.log("luna fue intersectado");
       }else{
@@ -553,75 +482,84 @@ const Planet = () => {
     function hideNft(){
       raycast.setFromCamera( mouse, camera );
       // calculate objects intersecting the picking ray
-      const interse = raycast.intersectObject( group );
+      const interse = raycast.intersectObject( prueba );
       if(interse.length>0){
         var objetoId = interse[0].object.id;
-        var objeto = interse[0].object;
-        function esconder(){
-          moonLabel.visible = true;
-        }
-        function label_2(){
-          moonLabel_2.visible = true;
-        }
+        console.log("Planet")
+        // var objeto = interse[0].object;
         // console.log(interse[0].object.id);
-        switch (objetoId){
-        //42
-        case objetoId = 43:
-          esconder();
-          break;
+        // switch (objetoId){
+        // //42
+        // case objetoId = 43:
+        //   esconder();
+        //   break;
 
-        case objetoId = 50:
-          label_2();
-          break;
+        // case objetoId = 50:
+        //   label_2();
+        //   break;
 
-        case objetoId = 48:
-          console.log("hola");
-          break;
+        // case objetoId = 48:
+        //   console.log("hola");
+        //   break;
 
-        case objetoId = 46:
-          console.log("hi 5");
-          break;
+        // case objetoId = 46:
+        //   console.log("hi 5");
+        //   break;
 
-        case objetoId = 44:
-          console.log("wireframe");
-          break;
+        // case objetoId = 44:
+        //   console.log("wireframe");
+        //   break;
 
-        default:
-          break;
-        }
+        // default:
+        //   break;
       }
     }
     function showNft(){
       raycast.setFromCamera( mouse, camera );
       // calculate objects intersecting the picking ray
-      const interse = raycast.intersectObject( group );
+      const interse = raycast.intersectObject( group )
+
       if(interse.length>0){
-        var objetoId = interse[0].object.id;
+        var objectId = interse[0].object.id;
         // var objeto = interse[0].object;
 
+        if(!interse[0].object.position.x == 0){
+          console.log("Id: " + interse[0].object.id + " posición: " + interse[0].object.position.x);
+        }
+
         // if(!interse[0].object.position.x == 0){
-        console.log("Id: " + interse[0].object.id + " posición: " + interse[0].object.position.x);
+        //   labels.forEach(element => {
+        //     if(element.id === objectId) {
+        //       console.log(element.id)
+        //       model.add(element)
+        //     }
+        //   })
         // }
 
-        switch (objetoId){
-        case objetoId = 59:
-          model.add(moonLabel)
+        switch (objectId){
+        case objectId = 60:
+          model.add(labels[0])
+          console.log(labels[0])
           break;
 
-        case objetoId = 60:
-          model.add(moonLabel_2)
+        case objectId = 61:
+          model.add(labels[1])
+          console.log(labels[1])
           break;
 
-        case objetoId = 61:
-          model.add(moonLabel_3)
+        case objectId = 62:
+          model.add(labels[2])
+          console.log(labels[2])
           break;
 
-        case objetoId = 62:
-          model.add(moonLabel_4)
+        case objectId = 63:
+          model.add(labels[3])
+          console.log(labels[3])
           break;
 
-        case objetoId = 63:
-          model.add(moonLabel_5)
+        case objectId = 64:
+          model.add(labels[4])
+          console.log(labels[4])
           break;
 
         default:
@@ -629,11 +567,63 @@ const Planet = () => {
         }
       }
     }
-    window.addEventListener( 'click', pickMoon );
-    window.addEventListener( 'pointermove', hoverHalo );
+
+    function ocultarLabels(){
+      //vectores temporales
+      let v = new THREE.Vector3();
+      let vectorPoin = new THREE.Vector3();
+      let vectorPoin1= new THREE.Vector3();
+      let vectorPoin2 = new THREE.Vector3();
+      let vectorPoin3 = new THREE.Vector3();
+      let vectorPoin4 = new THREE.Vector3();
+      //world direction de la posicion de la camara y los anillos
+      let camera_pos = camera.getWorldDirection(v);
+      let poin_pos = poin.getWorldDirection(vectorPoin);
+      let poin_1_pos = poin_1.getWorldDirection(vectorPoin1);
+      let poin_2_pos = poin_2.getWorldDirection(vectorPoin2);
+      let poin_3_pos = poin_3.getWorldDirection(vectorPoin3);
+      let poin_4_pos = poin_4.getWorldDirection(vectorPoin4);
+      //distancia entre la camara y cada anillo
+      let dis_poin= camera_pos.distanceTo(poin_pos);
+      let dis_poin_1 = camera_pos.distanceTo(poin_1_pos);
+      let dis_poin_2 = camera_pos.distanceTo(poin_2_pos);
+      let dis_poin_3 = camera_pos.distanceTo(poin_3_pos);
+      let dis_poin_4 = camera_pos.distanceTo(poin_4_pos);
+      //funcion para ocultar los labels
+      // console.log(dis_poin_1);
+      if(dis_poin < 1.78){
+        model.remove(labels[0]);
+      }
+
+      if(dis_poin_1 < 1.70){
+        model.remove(labels[1]);
+      }
+
+      if(dis_poin_2 < 1.78){
+        model.remove(labels[2]);
+      }
+
+      if(dis_poin_3 < 1.78){
+        model.remove(labels[3]);
+      }
+
+      if(dis_poin_4 < 1.78){
+        model.remove(labels[4]);
+      }
+    }
+
+    const loopMoon = () => {
+      model.rotation.y += elapsedtime * 0.03;
+    }
+
+    const stopMoon = () => {
+      model.rotation.y += 0;
+    }
+
+    window.addEventListener( 'pointermove', pickMoon );
+    window.addEventListener( 'pointermove', hoverHalo, false );
 
     function onWindowResize() {
-
       const width = window.innerWidth;
       const height = window.innerHeight;
 
@@ -642,36 +632,55 @@ const Planet = () => {
 
       renderer.setSize( width, height );
       composer.setSize( width, height );
-              labelRenderer.setSize(width, height);
+      labelRenderer.setSize(width, height);
     }
 
     function animate() {
 
       requestAnimationFrame( animate );
-      const elapsedtime = clock.getElapsedTime();
+
       //asteroides.position.y = Math.cos(0.56*elapsedtime);
-      //model.rotation.y = elapsedtime*0.06;
+      // model.rotation.y = elapsedtime*0.06;
+
+      raycast.setFromCamera( mouse, camera );
+      // calculate objects intersecting the picking ray
+      const interse = raycast.intersectObject( group )
+
+      if(interse.length>0){
+        var objectId = interse[0].object.id;
+        if(objectId === 59) {
+          console.log(objectId);
+          stopMoon();
+        }
+      }
+      else {
+        loopMoon();
+      }
+
+
+      ocultarLabels()
+
       //const delta = clock.getDelta();
 //animacion de rotacion
-/*asteroide_1.rotation.x = Math.cos(elapsedtime*0.2); 
-asteroide_1.rotation.y = Math.sin(elapsedtime*0.2); 
-asteroide_2.rotation.x = Math.cos(elapsedtime*0.2); 
-asteroide_2.rotation.y = Math.sin(elapsedtime*0.2); 
-asteroide_3.rotation.x = Math.cos(elapsedtime*0.5); 
-asteroide_3.rotation.y = Math.sin(elapsedtime*0.5);  
-asteroide_4.rotation.x = Math.cos(elapsedtime*0.2); 
-asteroide_4.rotation.y = Math.sin(elapsedtime*0.2);   
+/*asteroide_1.rotation.x = Math.cos(elapsedtime*0.2);
+asteroide_1.rotation.y = Math.sin(elapsedtime*0.2);
+asteroide_2.rotation.x = Math.cos(elapsedtime*0.2);
+asteroide_2.rotation.y = Math.sin(elapsedtime*0.2);
+asteroide_3.rotation.x = Math.cos(elapsedtime*0.5);
+asteroide_3.rotation.y = Math.sin(elapsedtime*0.5);
+asteroide_4.rotation.x = Math.cos(elapsedtime*0.2);
+asteroide_4.rotation.y = Math.sin(elapsedtime*0.2);
 asteroide_4.rotation.z = Math.sin(elapsedtime*0.3);
-asteroide_5.rotation.x = Math.cos(elapsedtime*0.4); 
+asteroide_5.rotation.x = Math.cos(elapsedtime*0.4);
 asteroide_5.rotation.z = Math.sin(elapsedtime*0.4);
-asteroide_6.rotation.x = Math.cos(elapsedtime*0.4); 
+asteroide_6.rotation.x = Math.cos(elapsedtime*0.4);
 asteroide_6.rotation.y = Math.sin(elapsedtime*0.4);  */
       //mixer.update( delta );
 //rayo_luz.rotation.x += elapsedtime*0.006;
-      // stats.update(); 
+      // stats.update();
       renderer.autoClear = false;
       renderer.clear();
-      
+
       //camera.layers.set(2);
       composer.render();
 
@@ -682,6 +691,8 @@ asteroide_6.rotation.y = Math.sin(elapsedtime*0.4);  */
       //camera.layers.set(0);
       labelRenderer.render( scene, camera );
 
+      // document.querySelectorAll('body > div')
+      // document.removeChild()
     }
   }
 

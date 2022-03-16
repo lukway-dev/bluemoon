@@ -1,7 +1,7 @@
 @import "../resources/_data"
 
 .TopCraters
-  height: calc(100% - 280px)
+  height: calc(100% - 320px)
   aspect-ratio: 2/3
   border: 1px solid $lightblue
   border-radius: 22px
@@ -81,16 +81,22 @@
 
 @media (max-width: 1920px)
   .TopCraters
-    height: calc(100% - 240px)
+    height: calc(95% - 240px)
     right: 40px
+    &__Items-Container
+      grid-auto-rows: 90px
 
 @media (max-width: 1640px)
   .TopCraters
-    height: calc(100% - 220px)
+    height: calc(95% - 200px)
     right: 40px
 
 @media (max-width: 1440px)
   .TopCraters
-    height: calc(100% - 200px)
-    right: 40px
     bottom: 8%
+    &__Items-Container
+      grid-auto-rows: 80px
+
+@media (max-width: 1200px)
+  .TopCraters
+    right: 30px

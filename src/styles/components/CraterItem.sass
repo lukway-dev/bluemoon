@@ -31,6 +31,9 @@
     margin: 0
     font: $font-bold
     font-size: 18px
+    overflow: hidden
+    white-space: nowrap
+    text-overflow: ellipsis
   &__Id
     margin-top: -5px
     color: $gray-dark
@@ -56,3 +59,19 @@
     color: $blue-dark
     font: $font-bold
     font-size: 18px
+
+@media (max-width: 1440px)
+  .CraterItem
+    &__Text-Container
+      margin: 0 10px
+    &__Title
+      width: 160px
+      font-size: 16px
+    &__Id
+      font-size: 14px
+    &__Date
+      font-size: 14px
+    &__Sales
+      font-size: 14px
+    &__Price
+      font-size: 16px

@@ -1,11 +1,11 @@
 import React, { useRef, useState } from 'react'
-import Modal from './Modal'
 import * as THREE from 'three'
 
 import Stats from 'three/examples/jsm/libs/stats.module.js';
 import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min.js';
 
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
+import { ObjectControls } from 'threejs-object-controls/ObjectControls.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { CSS2DObject, CSS2DRenderer } from 'three/examples/jsm/renderers/CSS2DRenderer.js'
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
@@ -23,7 +23,7 @@ import cratersData from '../database/cratersData';
 const Planet = () => {
   const canvasRef = useRef(null)
   const [ state, setState ] = useState(true)
-  const { modal, setModal } = useContext(AppContext)
+  const { setModal } = useContext(AppContext)
 
   if(canvasRef.current && state) {
     let camera, stats;
@@ -33,15 +33,15 @@ const Planet = () => {
     let moonDiv_2, textContainer_2, imgNft_2, text_2;
     let poin, poin_1, poin_2, poin_3, poin_4;
     const labels = [];
-    let labelsContainer
     const elapsedtime = 0.05;
+    var moonControls
     let group = new THREE.Group();
     let groupHalos = new THREE.Group();
     const params = {
       exposure: 1,
-      bloomStrength: 0.35,
+      bloomStrength: 1.37,
       bloomThreshold: 0.085,
-      bloomRadius: 0.74,
+      bloomRadius: 1,
       rotation: 3.14,
       position: 3
     };
@@ -65,7 +65,7 @@ const Planet = () => {
 
       clock = new THREE.Clock();
 
-      renderer = new THREE.WebGLRenderer( { antialias: true, canvas: document.getElementById('planet') } );
+      renderer = new THREE.WebGLRenderer( { antialias: true, canvas: document.getElementById('planet')});
       renderer.setPixelRatio( window.devicePixelRatio );
       renderer.setSize( window.innerWidth, window.innerHeight );
       renderer.toneMapping = THREE.ReinhardToneMapping;
@@ -74,9 +74,8 @@ const Planet = () => {
       labelRenderer = new CSS2DRenderer();
       labelRenderer.setSize( window.innerWidth, window.innerHeight );
       labelRenderer.domElement.style.position = 'absolute';
-      labelRenderer.domElement.style.top = '0px';
       // labelRenderer.domElement.style.pointerEvents = 'none';
-      document.body.appendChild( labelRenderer.domElement );
+      document.getElementById('controls').appendChild( labelRenderer.domElement );
 
       scene = new THREE.Scene();
 
@@ -90,10 +89,7 @@ const Planet = () => {
       // controls.minDistance = 1;
       // controls.maxDistance = 10;
       controls.enableZoom=false;
-      // controls.maxPolarAngle =2;
-      // controls.minPolarAngle = 0;
-      // controls.minAzimuthAngle = -Math.PI+0.3;
-      // controls.maxAzimuthAngle = Math.PI;
+      controls.enableRotate = false;
       camera.position.set( - 5, 2.5, - 2.5 );
       let vs = new THREE.Vector3(0,0,0);
       controls.target= vs;
@@ -197,13 +193,13 @@ const Planet = () => {
       // moonDiv.appendChild(imgNft);
       // moonDiv.appendChild(textContainer);
       // textContainer.appendChild(text);
-      var m = new THREE.Vector3(0.2888997963720485,-0.097548587942181,0.9523765960200176);
-      var m_1= new THREE.Vector3(-0.6073225261727431, 0.2890031902501969, -0.7400246652837772);
-      var m_2 = new THREE.Vector3(-0.7707801703924689, 0.6325620751447861, -0.07591541357510112);
-      var m_3 = new THREE.Vector3(-0.9904384997938112, -0.09754758544036858, -0.0975502265550357 );
-      var m_4 = new THREE.Vector3(0.607322417164568, 0.2890037594414522, 0.7400245324569269);
+      var l = new THREE.Vector3(0.2888997963720485, -0.097548587942181,0.9523765960200176);
+      var l_1= new THREE.Vector3(-0.6073225261727431, 0.2890031902501969, -0.7400246652837772);
+      var l_2 = new THREE.Vector3(-0.7707801703924689, 0.6325620751447861, -0.07591541357510112);
+      var l_3 = new THREE.Vector3(-0.9904384997938112, -0.09754758544036858, -0.0975502265550357 );
+      var l_4 = new THREE.Vector3(0.607322417164568, 0.2890037594414522, 0.7400245324569269);
 
-      const positions = [m, m_1, m_2, m_3, m_4]
+      const positions = [l, l_1, l_2, l_3, l_4]
 
       cratersData.forEach((element, index) => {
         if(index < 5) {
@@ -246,6 +242,7 @@ const Planet = () => {
           moonLabel.position.set(positions[index].x, positions[index].y, positions[index].z);
           moonLabel.lookAt(positions[index]);
           moonLabel.scale.set(0.003, 0.003, 0.003)
+          moonLabel.up.set(0, 0, 0)
           // scene.add(itemLabel);
           labels.push(moonLabel)
 
@@ -349,7 +346,7 @@ const Planet = () => {
       //meteoritos glb
       new GLTFLoader().load( AsteroidsGLB, function ( gltf ) {
         asteroides = gltf.scene;
-        asteroides.position.set(8,-3,4.35);
+        asteroides.position.set(12, -5, -1);
         asteroides.rotation.set(3.14,5.45,0);
         asteroides.scale.set(2,2,2);
         // asteroides.layers.enable(1);
@@ -362,11 +359,11 @@ const Planet = () => {
         model.traverse(function(child){
           if(child.isMesh){
             var contenedor = child.geometry.attributes.normal.array;
-            // var m = new THREE.Vector3(0.2888997963720485,-0.097548587942181,0.9523765960200176);
-            // var m_1= new THREE.Vector3(-0.6073225261727431, 0.2890031902501969, -0.7400246652837772);
-            // var m_2 = new THREE.Vector3(-0.7707801703924689, 0.6325620751447861, -0.07591541357510112);
-            // var m_3 = new THREE.Vector3(-0.9904384997938112, -0.09754758544036858, -0.0975502265550357 );
-            // var m_4 = new THREE.Vector3(0.607322417164568, 0.2890037594414522, 0.7400245324569269);
+            var m = new THREE.Vector3(0.2888997963720485,-0.097548587942181,0.9523765960200176);
+            var m_1= new THREE.Vector3(-0.6073225261727431, 0.2890031902501969, -0.7400246652837772);
+            var m_2 = new THREE.Vector3(-0.7707801703924689, 0.6325620751447861, -0.07591541357510112);
+            var m_3 = new THREE.Vector3(-0.9904384997938112, -0.09754758544036858, -0.0975502265550357 );
+            var m_4 = new THREE.Vector3(0.607322417164568, 0.2890037594414522, 0.7400245324569269);
             poin = new THREE.Mesh(new THREE.CircleGeometry( 3.1,30 ),  new THREE.MeshStandardMaterial( { side: THREE.DoubleSide, emissive:0xffffff, emissiveIntensity: 2 } ));
             poin_1 = new THREE.Mesh(new THREE.CircleGeometry( 3.1,30 ),  new THREE.MeshStandardMaterial( { side: THREE.DoubleSide, emissive:0xffffff, emissiveIntensity: 20 } ));
             poin_2 = new THREE.Mesh(new THREE.CircleGeometry( 3.1,30 ),  new THREE.MeshStandardMaterial( { side: THREE.DoubleSide, emissive:0xffffff, emissiveIntensity: 20 } ));
@@ -403,10 +400,6 @@ const Planet = () => {
             // model.add(poin, poin_1, poin_2, poin_3, poin_4, moonLabel, moonLabel_2, moonLabel_3, moonLabel_4, moonLabel_5, LightBeam, LightBeam_2, LightBeam_3, LightBeam_4, LightBeam_5);
             model.add(poin, poin_1, poin_2, poin_3, poin_4, LightBeam, LightBeam_2, LightBeam_3, LightBeam_4, LightBeam_5);
 
-            // labels.forEach(element => {
-            //   model.add(element)
-            // })
-
             model.position.set(1.4, 0, -1)
             group.add(model);
             //model.layers.enable(1);
@@ -416,6 +409,12 @@ const Planet = () => {
         });
         //model.layers.enable(2);
         scene.add(group);
+        moonControls = new ObjectControls(camera, labelRenderer.domElement, model);
+        moonControls.enableVerticalRotation();
+        moonControls.enableHorizontalRotation();
+        moonControls.setRotationSpeed(0.01);
+        moonControls.disableZoom();
+
         animate();
       } );
       // const gui = new GUI();
@@ -436,20 +435,20 @@ const Planet = () => {
       //   bloomPass.radius = Number( value );
       // } );
 
-      // gui.add(params, 'rotation', 0.0, 7.0).step(0.01).onChange(function (value){
-      //   LightBeam_5.rotation.x = Number(value);
+      // gui.add(params, 'rotation', 0.0, 20.0).step(0.01).onChange(function (value){
+      //   asteroides.rotation.x = Number(value);
       // });
-      // gui.add(params, 'rotation', 0.0, 7.0).step(0.01).onChange(function (value){
-      //   LightBeam_5.rotation.z = Number(value);
+      // gui.add(params, 'rotation', 0.0, 20.0).step(0.01).onChange(function (value){
+      //   asteroides.rotation.z = Number(value);
       // });
-      // gui.add(params, 'position', 0.0, 7.0).step(0.01).onChange(function (value){
-      //   model.position.x = Number(value);
+      // gui.add(params, 'position', 0.0, 20.0).step(0.01).onChange(function (value){
+      //   asteroides.position.x = Number(value);
       // });
-      // gui.add(params, 'position', 0.0, 7.0).step(0.01).onChange(function (value){
-      //   model.position.y = Number(value);
+      // gui.add(params, 'position', 0.0, 20.0).step(0.01).onChange(function (value){
+      //   asteroides.position.y = Number(value);
       // });
-      // gui.add(params, 'position', 0.0, 7.0).step(0.01).onChange(function (value){
-      //   model.position.z = Number(value);
+      // gui.add(params, 'position', 0.0, 20.0).step(0.01).onChange(function (value){
+      //   asteroides.position.z = Number(value);
       // });
       renderer.toneMappingExposure = Math.pow(0.96,4);
 
@@ -538,14 +537,14 @@ const Planet = () => {
         var objectId = interse[0].object.id;
         // var objeto = interse[0].object;
 
-        // if(!interse[0].object.position.x == 0){
-        //   labels.forEach(element => {
-        //     if(element.id === objectId) {
-        //       console.log(element.id)
-        //       model.add(element)
-        //     }
-        //   })
-        // }
+        if(!interse[0].object.position.x == 0){
+          console.log(interse[0].object.id)
+          // labels.forEach(element => {
+          //   if(element.id === objectId) {
+          //     model.add(element)
+          //   }
+          // })
+        }
 
         switch (objectId){
         case objectId = 60:
@@ -652,17 +651,19 @@ const Planet = () => {
       // calculate objects intersecting the picking ray
       const interse = raycast.intersectObject( group )
 
-      if(interse.length>0){
-        var objectId = interse[0].object.id;
-        if(objectId === 59) {
-          stopMoon();
-        }
-      }
-      else {
-        loopMoon();
-      }
+      // if(interse.length>0){
+      //   var objectId = interse[0].object.id;
+      //   if(objectId === 59) {
+      //     stopMoon();
+      //   }
+      // }
+      // else {
+      //   loopMoon();
+      // }
 
-
+      if(!moonControls.isUserInteractionActive() || moonControls.getObjectToMove() != model){                //model auto rotation
+        model.rotation.y += elapsedtime * 0.03;
+      }
       ocultarLabels()
 
       //const delta = clock.getDelta();
@@ -681,7 +682,7 @@ asteroide_5.rotation.z = Math.sin(elapsedtime*0.4);
 asteroide_6.rotation.x = Math.cos(elapsedtime*0.4);
 asteroide_6.rotation.y = Math.sin(elapsedtime*0.4);  */
       //mixer.update( delta );
-//rayo_luz.rotation.x += elapsedtime*0.006;
+      //rayo_luz.rotation.x += elapsedtime*0.006;
       // stats.update();
       renderer.autoClear = false;
       renderer.clear();
@@ -696,10 +697,21 @@ asteroide_6.rotation.y = Math.sin(elapsedtime*0.4);  */
       //camera.layers.set(0);
       labelRenderer.render( scene, camera );
 
-      if(!labelsContainer) {
-        labelsContainer = document.querySelector('#app ~ div')
-      }
-      // console.log(labelsContainer)
+
+      const headerHeight = document.querySelector("header").offsetHeight
+      const cratersWidth = document.querySelector(".TopCraters").offsetWidth + 40
+
+      labelRenderer.setSize(window.innerWidth, window.innerHeight);
+      // labelRenderer.setSize( (window.innerWidth - cratersWidth), (window.innerHeight - headerHeight) );
+
+      // labelRenderer.domElement.style.height = `calc(100vh - ${headerHeight}px)`
+      // labelRenderer.domElement.style.top = `${headerHeight}px`
+      // labelRenderer.domElement.style.width = `calc(100vw - ${cratersWidth}px)`
+
+      // canvasRef.current.style.height = `calc(100vh - ${headerHeight}px)`
+      // canvasRef.current.style.top = `${headerHeight}px`
+      // canvasRef.current.style.width = `calc(100vw - ${cratersWidth}px)`
+
       setState(false)
     }
   }

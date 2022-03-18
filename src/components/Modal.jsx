@@ -1,5 +1,6 @@
 import React from 'react';
 import { useContext } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { AppContext } from '../context/AppContext';
 import cratersData from '../database/cratersData';
 import '../styles/components/Modal.sass'
@@ -14,10 +15,6 @@ const Modal = () => {
       open: false,
       itemId: ''
     })
-
-    const labelRendererElement = document.querySelector('#app ~ div')
-
-    labelRendererElement.style.position = "absolute"
   }
 
   if (!modal.open) return null
@@ -31,7 +28,7 @@ const Modal = () => {
         <a className='Modal__Link' href="https://opensea.io/assets/0xd00e79629e2053d837285c74a0ec09f51b33c141/1635" target="_blank" rel="noreferrer">Go to Metaverse</a>
 
         <button className='Modal__Button-Close' onClick={handleCloseModal}>
-          X
+          <FontAwesomeIcon icon="fa-solid fa-xmark" />
         </button>
       </div>
     </div>

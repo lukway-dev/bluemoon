@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/bluemoon/static/css/main.8f82208d.css",
-    "main.js": "/bluemoon/static/js/main.0af713d9.js",
+    "main.js": "/bluemoon/static/js/main.0f786f8e.js",
     "static/media/BlueMoon_full.glb": "/bluemoon/static/media/BlueMoon_full.ef9e4b3bda1379c193e3.glb",
     "static/media/Asteroids.glb": "/bluemoon/static/media/Asteroids.7f2376e72b02501b5eda.glb",
     "static/media/rectangulo-2.png": "/bluemoon/static/media/rectangulo-2.df94915dcd2f796553ea.png",
@@ -9,10 +9,10 @@
     "static/media/LightBeam_n.glb": "/bluemoon/static/media/LightBeam_n.e800ffa979cb888443be.glb",
     "index.html": "/bluemoon/index.html",
     "main.8f82208d.css.map": "/bluemoon/static/css/main.8f82208d.css.map",
-    "main.0af713d9.js.map": "/bluemoon/static/js/main.0af713d9.js.map"
+    "main.0f786f8e.js.map": "/bluemoon/static/js/main.0f786f8e.js.map"
   },
   "entrypoints": [
     "static/css/main.8f82208d.css",
-    "static/js/main.0af713d9.js"
+    "static/js/main.0f786f8e.js"
   ]
 }

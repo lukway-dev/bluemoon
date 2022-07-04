@@ -33,15 +33,13 @@ const Planet = () => {
   // var geom_asteroide_1, geom_asteroide_2, geom_asteroide_3, geom_asteroide_4, geom_asteroide_5, geom_asteroide_6;
 
   useEffect(() => {
-    console.log(canvasRef.current)
-    console.log(state)
-
     if(canvasRef.current && state) {
       let camera;
       let composer, renderer, labelRenderer, moonLabel, scene;
       let model, asteroides, LightBeam, LightBeam_2, LightBeam_3, LightBeam_4, LightBeam_5;
       let textContainer, imgNft, text;
       let poin, poin_1, poin_2, poin_3, poin_4;
+      let controls
       const labels = [];
       const elapsedtime = 0.05;
       // let moonControls
@@ -49,9 +47,9 @@ const Planet = () => {
       // let groupHalos = new THREE.Group();
       const params = {
         exposure: 1,
-        bloomStrength: 1.37,
+        bloomStrength: 1.2,
         bloomThreshold: 0.085,
-        bloomRadius: 1,
+        bloomRadius: 0.5,
         rotation: 3.14,
         position: 3
       };
@@ -72,10 +70,7 @@ const Planet = () => {
       var windowHalfY = window.innerHeight / 2;
       var slowingFactor = 0.25;
 
-      console.log("hola")
-
       init();
-
 
       function init() {
         // const container = document.getElementById( 'container' );
@@ -98,17 +93,31 @@ const Planet = () => {
         scene = new THREE.Scene();
 
         camera = new THREE.PerspectiveCamera( 40, window.innerWidth / window.innerHeight, 1, 9000 );
-        camera.position.set( - 5, 2.5, - 2.5 );
+        camera.position.set(-5, 2.5, -2.5);
         camera.layers.enableAll();
         //camera.layers.enable(1);
 
-        const controls = new OrbitControls( camera, labelRenderer.domElement );
+        controls = new OrbitControls( camera, labelRenderer.domElement );
         // controls.maxPolarAngle = Math.PI * 0.5;
         // controls.minDistance = 1;
         // controls.maxDistance = 10;
         controls.enableZoom=false;
-        controls.enableRotate = false;
-        camera.position.set( - 5, 2.5, - 2.5 );
+        controls.autoRotate = true;
+        // controls.autoRotateSpeed = 0.2;
+        controls.autoRotateSpeed = 0.5;
+        controls.maxPolarAngle = Math.PI;
+        controls.minPolarAngle = -Math.PI/3;
+        controls.maxDistance = 5;
+        controls.minDistance = 2;
+        controls.rotateSpeed = 0.2;
+        controls.panSpeed = 2.3;
+        controls.screenSpacePanning = true;
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.6;
+        let pr = new THREE.Vector3();
+        pr.set(-0.3, 0, -1);
+        controls.target = pr;
+        // camera.position.set(-0.3, 0.25, -2);
         // let vs = new THREE.Vector3(0,0,0);
         // controls.target= vs;
         // controls.update();
@@ -316,11 +325,7 @@ const Planet = () => {
           model.traverse(function(child){
             if(child.isMesh){
               var contenedor = child.geometry.attributes.normal.array;
-              // var m = new THREE.Vector3(0.2888997963720485,-0.097548587942181,0.9523765960200176);
-              // var m_1= new THREE.Vector3(-0.6073225261727431, 0.2890031902501969, -0.7400246652837772);
-              // var m_2 = new THREE.Vector3(-0.7707801703924689, 0.6325620751447861, -0.07591541357510112);
-              // var m_3 = new THREE.Vector3(-0.9904384997938112, -0.09754758544036858, -0.0975502265550357 );
-              // var m_4 = new THREE.Vector3(0.607322417164568, 0.2890037594414522, 0.7400245324569269);
+
               poin = new THREE.Mesh(new THREE.CircleGeometry( 3.1,30 ),  new THREE.MeshStandardMaterial( { side: THREE.DoubleSide, emissive:0xffffff, emissiveIntensity: 2 } ));
               poin_1 = new THREE.Mesh(new THREE.CircleGeometry( 3.1,30 ),  new THREE.MeshStandardMaterial( { side: THREE.DoubleSide, emissive:0xffffff, emissiveIntensity: 20 } ));
               poin_2 = new THREE.Mesh(new THREE.CircleGeometry( 3.1,30 ),  new THREE.MeshStandardMaterial( { side: THREE.DoubleSide, emissive:0xffffff, emissiveIntensity: 20 } ));
@@ -347,10 +352,13 @@ const Planet = () => {
               poin_3.position.set(m_3.x,m_3.y,m_3.z);
               poin_4.position.set(m_4.x,m_4.y,m_4.z);
 
-              // model.add(poin, poin_1, poin_2, poin_3, poin_4, moonLabel, moonLabel_2, moonLabel_3, moonLabel_4, moonLabel_5, LightBeam, LightBeam_2, LightBeam_3, LightBeam_4, LightBeam_5);
               model.add(poin, poin_1, poin_2, poin_3, poin_4, LightBeam, LightBeam_2, LightBeam_3, LightBeam_4, LightBeam_5);
+              // model.add(LightBeam, LightBeam_2, LightBeam_3, LightBeam_4, LightBeam_5);
 
-              model.position.set(1.4, 0, -1)
+              model.position.set(-0.3, 0, -1)
+              // model.position.set(0, 0, 0)
+              // console.log(model.getWorldPosition())
+              // console.log(model.getWorldDirection())
               group.add(model);
             }
           });
@@ -399,53 +407,54 @@ const Planet = () => {
         // });
         renderer.toneMappingExposure = Math.pow(0.96,4);
 
-        window.addEventListener( 'resize', onWindowResize );
-        document.addEventListener( 'mousedown', onDocumentMouseDown, false );
+        // window.addEventListener( 'resize', onWindowResize );
+        // document.addEventListener( 'mousedown', onDocumentMouseDown, false );
       }
 
-      function onDocumentMouseDown( event ) {
-        event.preventDefault();
-        document.addEventListener( 'mousemove', onDocumentMouseMove, false );
-        document.addEventListener( 'mouseup', onDocumentMouseUp, false );
-        document.addEventListener( 'mouseout', onDocumentMouseOut, false );
-        mouseXOnMouseDown = event.clientX - windowHalfX;
-        targetRotationOnMouseDownX = targetRotationX;
-        mouseYOnMouseDown = event.clientY - windowHalfY;
-        targetRotationOnMouseDownY = targetRotationY;
-      }
-      function onDocumentMouseMove( event ) {
-          mouseX = event.clientX - windowHalfX;
-          targetRotationX = ( mouseX - mouseXOnMouseDown ) * 0.00025;
-          mouseY = event.clientY - windowHalfY;
-          targetRotationY = ( mouseY - mouseYOnMouseDown ) * 0.00025;
-      }
-      function onDocumentMouseUp( event ) {
-          document.removeEventListener( 'mousemove', onDocumentMouseMove, false );
-          document.removeEventListener( 'mouseup', onDocumentMouseUp, false );
-          document.removeEventListener( 'mouseout', onDocumentMouseOut, false );
-      }
-      function onDocumentMouseOut( event ) {
-          document.removeEventListener( 'mousemove', onDocumentMouseMove, false );
-          document.removeEventListener( 'mouseup', onDocumentMouseUp, false );
-          document.removeEventListener( 'mouseout', onDocumentMouseOut, false );
-      }
-      function rotateAroundObjectAxis(object, axis, radians) {
-          var rotationMatrix = new THREE.Matrix4();
-          rotationMatrix.makeRotationAxis(axis.normalize(), radians);
-          object.matrix.multiply(rotationMatrix);
-          object.rotation.setFromRotationMatrix( object.matrix );
-      }
-      function rotateAroundWorldAxis( object, axis, radians ) {
-          var rotationMatrix = new THREE.Matrix4();
-          rotationMatrix.makeRotationAxis( axis.normalize(), radians );
-          rotationMatrix.multiply( object.matrix );                       // pre-multiply
-          object.matrix = rotationMatrix;
-          object.rotation.setFromRotationMatrix( object.matrix );
-      }
+      // function onDocumentMouseDown( event ) {
+      //   event.preventDefault();
+      //   document.addEventListener( 'mousemove', onDocumentMouseMove, false );
+      //   document.addEventListener( 'mouseup', onDocumentMouseUp, false );
+      //   document.addEventListener( 'mouseout', onDocumentMouseOut, false );
+      //   mouseXOnMouseDown = event.clientX - windowHalfX;
+      //   targetRotationOnMouseDownX = targetRotationX;
+      //   mouseYOnMouseDown = event.clientY - windowHalfY;
+      //   targetRotationOnMouseDownY = targetRotationY;
+      // }
+      // function onDocumentMouseMove( event ) {
+      //     mouseX = event.clientX - windowHalfX;
+      //     targetRotationX = ( mouseX - mouseXOnMouseDown ) * 0.00025;
+      //     mouseY = event.clientY - windowHalfY;
+      //     targetRotationY = ( mouseY - mouseYOnMouseDown ) * 0.00025;
+      // }
+      // function onDocumentMouseUp( event ) {
+      //     document.removeEventListener( 'mousemove', onDocumentMouseMove, false );
+      //     document.removeEventListener( 'mouseup', onDocumentMouseUp, false );
+      //     document.removeEventListener( 'mouseout', onDocumentMouseOut, false );
+      // }
+      // function onDocumentMouseOut( event ) {
+      //     document.removeEventListener( 'mousemove', onDocumentMouseMove, false );
+      //     document.removeEventListener( 'mouseup', onDocumentMouseUp, false );
+      //     document.removeEventListener( 'mouseout', onDocumentMouseOut, false );
+      // }
+      // function rotateAroundObjectAxis(object, axis, radians) {
+      //     var rotationMatrix = new THREE.Matrix4();
+      //     rotationMatrix.makeRotationAxis(axis.normalize(), radians);
+      //     object.matrix.multiply(rotationMatrix);
+      //     object.rotation.setFromRotationMatrix( object.matrix );
+      // }
+      // function rotateAroundWorldAxis( object, axis, radians ) {
+      //     var rotationMatrix = new THREE.Matrix4();
+      //     rotationMatrix.makeRotationAxis( axis.normalize(), radians );
+      //     rotationMatrix.multiply( object.matrix );                       // pre-multiply
+      //     object.matrix = rotationMatrix;
+      //     object.rotation.setFromRotationMatrix( object.matrix );
+      // }
 
       function hoverHalo(event){
-        mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
-        mouse.y = -( event.clientY / window.innerHeight ) * 2 + 1;
+        var canv = document.getElementById('planet')
+        mouse.x = ( event.clientX / canv.clientWidth ) * 2 - 1;
+        mouse.y = -( event.clientY / canv.clientHeight ) * 2 + 1;
         showNft();
       }
 
@@ -483,41 +492,120 @@ const Planet = () => {
         const interse = raycast.intersectObject( group )
 
         if(interse.length>0){
-          var objectId = interse[0].object.id;
-          // var objeto = interse[0].object;
+          var objectId = interse[0].object.id
 
-          if(!interse[0].object.position.x === 0){
-            console.log(interse[0].object.id)
-            // labels.forEach(element => {
-            //   if(element.id === objectId) {
-            //     model.add(element)
-            //   }
-            // })
-          }
+          // if(objectId !== 58) {
+          //   console.log(interse[0].object.id)
+          //   if(!interse[0].object.position.x == 0){
+          //     console.log("Crater: " +interse[0].object.id)
+          //   }
+          // }
+//           switch (objectId) {
+//             case objectId = 59:
+//               model.add(labels[0])
+//               break;
+//             case objectId = 45:
+//               model.add(labels[0])
+//               break;
+//             case objectId = 46:
+//               model.add(labels[0])
+//               break;
+// //////////////////////////////////
+//             case objectId = 60:
+//               model.add(labels[1])
+//               break;
+//             case objectId = 47:
+//               model.add(labels[1])
+//               break;
+//             case objectId = 48:
+//               model.add(labels[1])
+//               break;
+// ////////////////////////////////////
+//             case objectId = 61:
+//               model.add(labels[2])
+//               break;
+//             case objectId = 49:
+//               model.add(labels[2])
+//               break;
+//             case objectId = 50:
+//               model.add(labels[2])
+//               break;
+// ///////////////////////////////////////
+//             case objectId = 62:
+//               model.add(labels[3])
+//               break;
+//             case objectId = 51:
+//               model.add(labels[3])
+//               break;
+//             case objectId = 52:
+//               model.add(labels[3])
+//               break;
+// /////////////////////////////////////////////
+//             case objectId = 63:
+//               model.add(labels[4])
+//               break;
+//             case objectId = 53:
+//               model.add(labels[4])
+//               break;
+//             case objectId = 54:
+//               model.add(labels[4])
+//               break;
+//             default:
+//               break
+//           }
 
-          switch (objectId){
-          case objectId = 59:
-            model.add(labels[0])
-            break;
-
-          case objectId = 60:
-            model.add(labels[1])
-            break;
-
-          case objectId = 61:
-            model.add(labels[2])
-            break;
-
-          case objectId = 62:
-            model.add(labels[3])
-            break;
-
-          case objectId = 63:
-            model.add(labels[4])
-            break;
-
-          default:
-            break;
+          switch (objectId) {
+            case objectId = 58:
+              model.add(labels[0])
+              break;
+            case objectId = 27:
+              model.add(labels[0])
+              break;
+            case objectId = 28:
+              model.add(labels[0])
+              break;
+//////////////////////////////////
+            case objectId = 59:
+              model.add(labels[1])
+              break;
+            case objectId = 29:
+              model.add(labels[1])
+              break;
+            case objectId = 30:
+              model.add(labels[1])
+              break;
+////////////////////////////////////
+            case objectId = 60:
+              model.add(labels[2])
+              break;
+            case objectId = 31:
+              model.add(labels[2])
+              break;
+            case objectId = 32:
+              model.add(labels[2])
+              break;
+///////////////////////////////////////
+            case objectId = 61:
+              model.add(labels[3])
+              break;
+            case objectId = 33:
+              model.add(labels[3])
+              break;
+            case objectId = 34:
+              model.add(labels[3])
+              break;
+/////////////////////////////////////////////
+            case objectId = 62:
+              model.add(labels[4])
+              break;
+            case objectId = 35:
+              model.add(labels[4])
+              break;
+            case objectId = 36:
+              model.add(labels[4])
+              break;
+            default:
+              break
           }
         }
       }
@@ -578,41 +666,71 @@ const Planet = () => {
       window.addEventListener( 'pointermove', hoverHalo, false );
 
       function onWindowResize() {
-        const width = window.innerWidth;
-        const height = window.innerHeight;
+        const canvas = renderer.domElement;
+        // look up the size the canvas is being displayed
+        const windowWidth = window.innerWidth
+        const windowHeight = window.innerHeight
+        const itemWidth = document.querySelector(".TopCraters").offsetWidth + 40
+        const itemHeight = document.querySelector("header").offsetHeight
 
-        camera.aspect = width / height;
-        camera.updateProjectionMatrix();
+        const width = windowWidth - itemWidth
+        const height = windowHeight
 
-        renderer.setSize( width, height );
-        composer.setSize( width, height );
-        labelRenderer.setSize(width, height);
+        // adjust displayBuffer size to match
+        if (canvas.width !== width || canvas.height !== height) {
+          // you must pass false here or three.js sadly fights the browser
+          camera.aspect = width / height;
+          camera.updateProjectionMatrix();
+
+          // renderer.domElement.style.marginTop = `${itemHeight}px`
+          renderer.setSize( width, height );
+          composer.setSize( width, height );
+          labelRenderer.setSize(width, height);
+
+
+          // labelRenderer.setSize(window.innerWidth, window.innerHeight);
+          // // labelRenderer.setSize( (window.innerWidth - cratersWidth), (window.innerHeight - headerHeight) );
+
+          // labelRenderer.domElement.style.height = `calc(100vh - ${headerHeight}px)`
+          // labelRenderer.domElement.style.top = `${headerHeight}px`
+          // labelRenderer.domElement.style.width = `calc(100vw - ${cratersWidth}px)`
+
+          // renderer.domElement.style.height = `calc(100vh - ${headerHeight}px)`
+          // renderer.domElement.style.marginTop = `${headerHeight}px`
+          // renderer.domElement.style.width = `calc(100vw - ${cratersWidth}px)`
+
+          // update any render target sizes here
+        }
       }
 
       function animate() {
         requestAnimationFrame( animate );
 
-        raycast.setFromCamera( mouse, camera );
-        // calculate objects intersecting the picking ray
-        const interse = raycast.intersectObject( group )
+        onWindowResize()
 
-        if(interse.length>0){
-          var objectId = interse[0].object.id;
-          if(objectId === 59) {
-            stopMoon();
-          }
-        }
-        else {
-          loopMoon();
-        }
+        // raycast.setFromCamera( mouse, camera );
+        // calculate objects intersecting the picking ray
+        // const interse = raycast.intersectObject( group )
+
+        // if(interse.length>0){
+        //   var objectId = interse[0].object.id;
+        //   if(objectId === 59) {
+        //     stopMoon();
+        //   }
+        // }
+        // else {
+        //   loopMoon();
+        // }
 
         // if(!moonControls.isUserInteractionActive() || moonControls.getObjectToMove() != model){                //model auto rotation
         //   model.rotation.y += elapsedtime * 0.03;
         // }
+        controls.update();
+
         ocultarLabels()
 
-        rotateAroundWorldAxis(model, new THREE.Vector3(0, 1, 0), targetRotationX);
-        targetRotationX = targetRotationX * (1 - 0.99);
+        // rotateAroundWorldAxis(model, new THREE.Vector3(0, 1, 0), targetRotationX);
+        // targetRotationX = targetRotationX * (1 - 0.99);
 
         // rotateAroundWorldAxis(model, new THREE.Vector3(0, 0, 1), targetRotationY);
         // targetRotationY = targetRotationY * (1 - 0.99);
@@ -627,19 +745,19 @@ const Planet = () => {
         renderer.render( scene, camera );
         labelRenderer.render( scene, camera );
 
-        const headerHeight = document.querySelector("header").offsetHeight
-        const cratersWidth = document.querySelector(".TopCraters").offsetWidth + 40
+        // const headerHeight = document.querySelector("header").offsetHeight
+        // const cratersWidth = document.querySelector(".TopCraters").offsetWidth + 40
 
-        labelRenderer.setSize(window.innerWidth, window.innerHeight);
-        // labelRenderer.setSize( (window.innerWidth - cratersWidth), (window.innerHeight - headerHeight) );
+        // labelRenderer.setSize(window.innerWidth, window.innerHeight);
+        // // labelRenderer.setSize( (window.innerWidth - cratersWidth), (window.innerHeight - headerHeight) );
 
         // labelRenderer.domElement.style.height = `calc(100vh - ${headerHeight}px)`
         // labelRenderer.domElement.style.top = `${headerHeight}px`
         // labelRenderer.domElement.style.width = `calc(100vw - ${cratersWidth}px)`
 
-        // canvasRef.current.style.height = `calc(100vh - ${headerHeight}px)`
-        // canvasRef.current.style.top = `${headerHeight}px`
-        // canvasRef.current.style.width = `calc(100vw - ${cratersWidth}px)`
+        // renderer.domElement.style.height = `calc(100vh - ${headerHeight}px)`
+        // renderer.domElement.style.marginTop = `${headerHeight}px`
+        // renderer.domElement.style.width = `calc(100vw - ${cratersWidth}px)`
 
         setState(false)
       }

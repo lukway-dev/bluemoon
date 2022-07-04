@@ -48,7 +48,7 @@ const TopCraters = () => {
     <aside className='TopCraters'>
       <div className="TopCraters__Header">
         <div className='TopCraters__Title-Container'>
-          <img className='TopCraters__Icon' src='./assets/asteroide.svg'/>
+          <img className='TopCraters__Icon' src='./bluemoon/assets/asteroide.svg'/>
           <h1 className='TopCraters__Title'>
             <span className='TopCraters__Title--Highlight'>Top</span> Craters
           </h1>

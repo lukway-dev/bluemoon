@@ -25,7 +25,7 @@ const Sort = ({ sortArray }) => {
     <div className="Sort">
       <button className="Sort__Button" onClick={handleShowOptions}>
         Sort By
-        <img className='Sort__Button-Icon' src='./assets/arrow.svg' ref={arrowRef}/>
+        <img className='Sort__Button-Icon' src='./bluemoon/assets/arrow.svg' ref={arrowRef}/>
       </button>
       {showOptions && (
         <div className="Sort__Items-Container">
